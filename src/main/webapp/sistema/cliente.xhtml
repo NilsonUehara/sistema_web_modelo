@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    </h:head> 
+    <h:body>
+        <h:panelGroup id="tudo">
+            <h:panelGroup rendered="#{clienteMB.etapa eq 0}">
+                <h:form id="frmLista">
+                    <p:commandButton value="Voltar" action="/sistema/home" ajax="false"/>
+                    <p:separator />
+                    <p:commandButton value="Novo cliente" actionListener="#{clienteMB.novo()}" update=":tudo"/>
+
+                    <p:dataTable value="#{clienteMB.clientes}" var="c" emptyMessage="Nenhum cliente cadastrado!"
+                                 selectionMode="single" selection="#{clienteMB.cliente}" rowKey="#{c.id}">
+                        <p:ajax event="rowSelect" update=":tudo" listener="#{clienteMB.editar()}" />
+                        <p:column headerText="ID" width="50">
+                            <h:outputText value="#{c.id}"/>
+                        </p:column>
+                        <p:column headerText="Nome">
+                            <h:outputText value="#{c.nome}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </h:panelGroup>
+            
+            <h:panelGroup rendered="#{clienteMB.etapa eq 1}">
+                <h:form id="frmEdita">
+                    <p>Nome:</p>
+                    <p><p:inputText value="#{clienteMB.cliente.nome}"/></p>
+                    <p>Endereço:</p>
+                    <p><p:inputText value="#{clienteMB.cliente.endereco}"/></p>
+                    <p:commandButton value="Voltar" actionListener="#{clienteMB.setEtapa(0)}" update=":tudo" style="margin-right: 10px;"/>
+                    <p:commandButton value="Excluir" actionListener="#{clienteMB.excluir()}" rendered="#{clienteMB.cliente.id ne 0}" update=":tudo" style="margin-right: 10px;"/>
+                    <p:commandButton value="Salvar" actionListener="#{clienteMB.salvar()}" update=":tudo" />
+                </h:form>
+            </h:panelGroup>
+        </h:panelGroup>
+    </h:body>
+</html>                

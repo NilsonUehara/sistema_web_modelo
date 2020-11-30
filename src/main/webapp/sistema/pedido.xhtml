@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    </h:head> 
+    <h:body>
+        <h:panelGroup id="tudo">
+            <h:panelGroup rendered="#{pedidoMB.etapa eq 0}">
+                <h:form id="frmLista">
+                    <p:commandButton value="Voltar" action="/sistema/home" ajax="false"/>
+                    <p:separator />
+                    <p:commandButton value="Novo pedido" actionListener="#{pedidoMB.novo()}" update=":tudo"/>
+
+                    <p:dataTable value="#{pedidoMB.pedidos}" var="p" emptyMessage="Nenhum pedido cadastrado!"
+                                 selectionMode="single" selection="#{pedidoMB.pedido}" rowKey="#{p.id}">
+                        <p:ajax event="rowSelect" update=":tudo" listener="#{pedidoMB.editar()}" />
+                        <p:column headerText="ID" width="50">
+                            <h:outputText value="#{p.id}"/>
+                        </p:column>
+                        <p:column headerText="Data">
+                            <h:outputText value="#{p.data}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Cliente">
+                            <h:outputText value="#{p.cliente.nome}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </h:panelGroup>
+            
+            <h:panelGroup rendered="#{pedidoMB.etapa eq 1}">
+                <h:form id="frmEdita">
+                    <p>Cliente:</p>
+                    <p>
+                        <h:outputText value="#{pedidoMB.pedido.cliente.nome}" rendered="#{pedidoMB.pedido.cliente ne null}" />
+                        <p:commandButton value="Buscar" onclick="PF('dlgSelCli').show()" style="margin-left: 10px;" />
+                    </p>
+                    <p>Data:</p>
+                    <p>
+                        <p:calendar value="#{pedidoMB.pedido.data}" mask="true" size="10" pattern="dd/MM/yyyy" validatorMessage="Data inválida" showOn="button" />
+                    </p>
+                    <p:commandButton value="Voltar" actionListener="#{pedidoMB.setEtapa(0)}" update=":tudo" style="margin-right: 10px;"/>
+                    <p:commandButton value="Excluir" actionListener="#{pedidoMB.excluir()}" rendered="#{pedidoMB.pedido.id ne 0}" update=":tudo" style="margin-right: 10px;"/>
+                    <p:commandButton value="Salvar" actionListener="#{pedidoMB.salvar()}" update=":tudo" />
+                </h:form>
+            </h:panelGroup>
+        </h:panelGroup>
+        
+        <p:dialog widgetVar="dlgSelCli" width="800px">
+            <h:form id="frmSelCli">
+                <p:dataTable value="#{clienteMB.clientes}" var="c" emptyMessage="Nenhum cliente cadastrado!"
+                             selectionMode="single" selection="#{pedidoMB.pedido.cliente}" rowKey="#{c.id}"
+                             paginator="true" rows="10" paginatorAlwaysVisible="false">
+                    <p:ajax event="rowSelect" update=":tudo" onsuccess="PF('dlgSelCli').hide()" />
+                    <p:column headerText="ID" width="50">
+                        <h:outputText value="#{c.id}"/>
+                    </p:column>
+                    <p:column headerText="Nome">
+                        <h:outputText value="#{c.nome}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>                
