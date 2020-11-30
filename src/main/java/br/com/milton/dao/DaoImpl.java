@@ -7,10 +7,9 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.RollbackException;
 
-public abstract class DaoImpl<T, I extends Serializable> implements Dao<T, I>, Serializable {
+public abstract class DaoImpl<T, I extends Serializable>{
     private EntityManager manager;
 
-    @Override
     public T save(T entity) {
         T saved=null;
         try{
@@ -26,7 +25,6 @@ public abstract class DaoImpl<T, I extends Serializable> implements Dao<T, I>, S
         return saved;
     }
 
-    @Override
     public void delete(Class<T> classe, I pk) throws RollbackException{
         try{
             getEntityManager().getTransaction().begin();
@@ -43,7 +41,6 @@ public abstract class DaoImpl<T, I extends Serializable> implements Dao<T, I>, S
         }
     }
 
-    @Override
     public T getById(Class<T> classe, I pk) throws NoResultException{
         T t;
         try {
@@ -57,7 +54,6 @@ public abstract class DaoImpl<T, I extends Serializable> implements Dao<T, I>, S
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public List<T> getAll(Class<T> classe) {
         List<T>ts=null;
         try{
